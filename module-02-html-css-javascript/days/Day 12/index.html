@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Habesha Eatery — Authentic Ethiopian Dining in Bole</title>
+    <meta name="description" content="Reserve a table and view our authentic menu at Habesha Eatery in Bole, Addis Ababa.">
+</head>
+<body>
+
+    <header>
+        <h1>Habesha Eatery</h1>
+    </header>
+
+    <nav aria-label="Main Navigation">
+        <ul>
+            <li><a href="index.html">Reservations &amp; Menu</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Table Reservation</h2>
+            <form action="/reserve" method="post">
+                <fieldset>
+                    <legend>Customer Details</legend>
+                    
+                    <p>
+                        <label for="fullname">Full Name</label><br>
+                        <input id="fullname" name="fullname" type="text" required>
+                    </p>
+                    
+                    <p>
+                        <label for="tel">Phone Number (TeleBirr)</label><br>
+                        <input id="tel" name="tel" type="tel" pattern="\+251[0-9]{9}" placeholder="+251911234567" required aria-describedby="tel-help">
+                        <small id="tel-help">Format: +251 followed by 9 digits.</small>
+                    </p>
+
+                    <p>
+                        <label for="size">Number of Guests</label><br>
+                        <input id="size" name="size" type="number" min="1" max="12" required>
+                    </p>
+
+                    <p>
+                        <label for="res-date">Reservation Date</label><br>
+                        <input id="res-date" name="res_date" type="date" required>
+                    </p>
+
+                    <button type="submit">Submit Reservation</button>
+                </fieldset>
+            </form>
+        </section>
+
+        <section>
+            <h2>Our Main Menu</h2>
+            <table>
+                <caption>Habesha Eatery main menu prices in ETB</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Dish</th>
+                        <th scope="col">Price (ETB)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">Doro Wat</th>
+                        <td>700</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Tibs</th>
+                        <td>1000</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Kitfo</th>
+                        <td>1200</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Beyaynetu</th>
+                        <td>500</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Shiro</th>
+                        <td>200</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Location &amp; Special Dish</h2>
+            <figure>
+                <img src="doro-wat.jpg" alt="A plate of spicy Doro Wat served with boiled eggs on injera" width="640" height="420" loading="lazy">
+                <figcaption>Our Special Dish: Traditional Doro Wat cooked in spicy berbere sauce, served with hard-boiled eggs on fresh injera.</figcaption>
+            </figure>
+
+            <h3>Find Us in Bole</h3>
+            <iframe src="https://maps.google.com/maps?q=Bole,AddisAbaba&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed" title="Map showing Habesha Eatery location in Bole, Addis Ababa" width="100%" height="320" loading="lazy"></iframe>
+        </section>
+    </main>
+
+    <footer>
+        <p>Bole, Addis Ababa | Phone: +251 911 234 567</p>
+        <p>&copy; 2026 Habesha Eatery. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
