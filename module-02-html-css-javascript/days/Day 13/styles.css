@@ -1,0 +1,131 @@
+:root {
+    --brand-hue: 212;
+    --brand-sat: 68%;
+    --brand: hsl(var(--brand-hue), var(--brand-sat), 33%);
+    --brand-hover: hsl(var(--brand-hue), var(--brand-sat), 45%);
+    --accent: hsl(38, 92%, 50%);
+    
+    --text-main: #252027;
+    --text-muted: #1fec30;
+    --border-color: #64304b;
+
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --radius: 12px;
+    
+    --font-main: 'Inter', sans-serif;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    line-height: 1.6;
+    color: var(--text-main);
+    background-color: #F7FAFC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: var(--space-md);
+}
+
+.card {
+    background-color: #FFFFFF;
+    width: 100%;
+    max-width: 380px;
+    padding: var(--space-lg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    margin-bottom: var(--space-md);
+}
+
+.status-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--brand);
+    position: relative;
+    padding-left: 14px;
+    margin-bottom: var(--space-sm);
+}
+
+.status-badge::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent);
+    border-radius: 50%;
+}
+
+.business-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--brand);
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+.tagline {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.description {
+    font-size: 0.95rem;
+    margin-bottom: var(--space-md);
+}
+
+.details-list {
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.details-list li {
+    margin-bottom: var(--space-sm);
+}
+
+.details-list strong {
+    color: var(--text-main);
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: var(--brand);
+    color: #FFFFFF;
+    text-decoration: none;
+    font-weight: 600;
+    padding: var(--space-md);
+    border-radius: var(--radius);
+    transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+    background-color: var(--brand-hover);
+}
+
+.btn:focus {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+}
