@@ -1,0 +1,13 @@
+Total Credits: 1800 ETB
+Total Debits:  880 ETB
+
+--- Transaction Receipts ---
+Receipt: Almaz paid 250 ETB (DEBIT)
+Receipt: Dawit paid 600 ETB (CREDIT)
+Receipt: Tigist paid 180 ETB (DEBIT)
+Receipt: Abebe paid 1200 ETB (CREDIT)
+Receipt: Kebede paid 450 ETB (DEBIT)
+
+--- Immutable Update Demonstration ---
+Original Txn #1 Amount: 250 ETB
+Updated Txn #1 Amount:  300 ETB
