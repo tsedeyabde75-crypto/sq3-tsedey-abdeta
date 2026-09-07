@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Addis Eats | Food Ordering</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Addis Eats</h1>
+    <nav>
+      <button id="themeToggleBtn">Toggle Theme</button>
+      <button id="historyBtn">Order History</button>
+      <a href="admin-login.html">Admin Login</a>
+    </nav>
+  </header>
+
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Search dishes...">
+    <select id="categoryFilter">
+      <option value="all">All Categories</option>
+      <option value="ethiopian">Ethiopian</option>
+      <option value="pizza">Pizza</option>
+      <option value="burgers">Burgers</option>
+      <option value="drinks">Drinks</option>
+    </select>
+  </div>
+
+  <div class="container">
+    <main class="menu-section">
+      <div id="loadingState">Loading delicious dishes...</div>
+      <div id="errorState" style="display: none; color: red;">Failed to load dishes.</div>
+      <div id="menuContainer" class="grid"></div>
+    </main>
+
+    <aside class="cart-section">
+      <h2>Your Cart (<span id="cartCount">0</span>)</h2>
+      <div id="cartItems"></div>
+      <p id="emptyCartMsg">Your cart is empty.</p>
+      
+      <div id="cartSummary" style="display:none;">
+        <hr>
+        <label>Delivery Area:
+          <select id="areaSelect">
+            <option value="Bole" data-fee="100">Bole (100 ETB)</option>
+            <option value="Kazanchis" data-fee="80">Kazanchis (80 ETB)</option>
+            <option value="Piassa" data-fee="120">Piassa (120 ETB)</option>
+            <option value="CMC" data-fee="150">CMC (150 ETB)</option>
+          </select>
+        </label>
+        <p>Subtotal: <span id="subtotal">0</span> ETB</p>
+        <p>Delivery Fee: <span id="deliveryFee">100</span> ETB</p>
+        <h3>Total: <span id="grandTotal">0</span> ETB</h3>
+        <p>Estimated Delivery: <span id="estTime">30-45 mins</span></p>
+
+        <form id="checkoutForm">
+          <input type="text" id="custName" placeholder="Full Name" required>
+          <input type="tel" id="custPhone" placeholder="Phone (e.g. 0911234567)" pattern="^09[0-9]{8}$" required>
+          <textarea id="specialNotes" placeholder="Special instructions..."></textarea>
+          <button type="submit">Place Order</button>
+        </form>
+      </div>
+    </aside>
+  </div>
+
+  <div id="dishModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" style="cursor:pointer; float:right;">&times;</span>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <div id="historyModal" class="modal">
+    <div class="modal-content">
+      <span id="closeHistoryModal" style="cursor:pointer; float:right;">&times;</span>
+      <h2>Order History</h2>
+      <div id="historyBody"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

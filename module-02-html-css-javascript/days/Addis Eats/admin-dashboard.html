@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Addis Eats</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+  <div class="sidebar">
+    <h2>Addis Eats Admin</h2>
+    <nav>
+      <button onclick="showSection('analytics')">Dashboard Analytics</button>
+      <button onclick="showSection('dishes')">Manage Dishes</button>
+      <button onclick="showSection('orders')">Manage Orders</button>
+      <button id="logoutBtn" style="color: red; margin-top:2rem;">Logout</button>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <section id="analyticsSection">
+      <h1>Dashboard Analytics</h1>
+      <div class="analytics-cards">
+        <div class="card-stat">
+          <h3>Total Revenue</h3>
+          <p id="totalRev">0 ETB</p>
+        </div>
+        <div class="card-stat">
+          <h3>Total Orders</h3>
+          <p id="totalOrders">0</p>
+        </div>
+        <div class="card-stat">
+          <h3>Avg Order Value</h3>
+          <p id="avgOrder">0 ETB</p>
+        </div>
+      </div>
+      <h3>Top Selling Dishes</h3>
+      <ul id="topDishes"></ul>
+    </section>
+
+    <section id="dishesSection" style="display:none;">
+      <h1>Manage Dishes</h1>
+      <button onclick="openDishForm()">Add New Dish</button>
+      <input type="text" id="searchAdminDishes" placeholder="Search dishes..." style="margin-left: 1rem;">
+      <table id="dishesTable">
+        <thead>
+          <tr>
+            <th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section id="ordersSection" style="display:none;">
+      <h1>Manage Orders</h1>
+      <table id="ordersTable">
+        <thead>
+          <tr>
+            <th>Order ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

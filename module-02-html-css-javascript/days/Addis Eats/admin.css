@@ -1,0 +1,65 @@
+.admin-body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background: #2c3e50;
+  color: #fff;
+  padding: 1rem;
+}
+
+.sidebar h2 { font-size: 1.2rem; }
+
+.sidebar nav button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: transparent;
+  color: #fff;
+  text-align: left;
+  border: none;
+}
+
+.sidebar nav button:hover {
+  background: #34495e;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  background: #ecf0f1;
+}
+
+.analytics-cards {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.card-stat {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  flex: 1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  margin-top: 1rem;
+}
+
+th, td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+th { background: #f4f4f4; }

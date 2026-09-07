@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Doro Wat",
+    "description": "Spicy Ethiopian chicken stew with berbere, served with injera",
+    "price": 700,
+    "category": "ethiopian",
+    "image": "images/doro-wet.png",
+    "ingredients": ["Chicken", "Berbere", "Onions", "Injera", "Garlic", "Ginger"]
+  },
+  {
+    "id": 2,
+    "name": "Beef Tibs",
+    "description": "Sautéed beef strips with onions, garlic, and jalapeños served hot with injera",
+    "price": 1000,
+    "category": "ethiopian",
+    "image": "images/tibs.png",
+    "ingredients": ["Beef", "Onions", "Garlic", "Jalapeño", "Rosemary", "Injera"]
+  },
+  {
+    "id": 3,
+    "name": "Margherita Pizza",
+    "description": "Classic Italian style pizza topped with rich tomato sauce and mozzarella cheese",
+    "price": 600,
+    "category": "pizza",
+    "image": "images/pizza.png",
+    "ingredients": ["Tomato Sauce", "Mozzarella", "Basil", "Olive Oil"]
+  },
+  {
+    "id": 4,
+    "name": "Addis Special Burger",
+    "description": "Juicy beef patty topped with cheese, caramelized onions, and signature house sauce",
+    "price": 800,
+    "category": "burgers",
+    "image": "images/burger.png",
+    "ingredients": ["Beef Patty", "Cheddar", "Caramelized Onions", "Lettuce", "House Sauce"]
+  },
+  {
+    "id": 5,
+    "name": "Fresh Mango Juice",
+    "description": "Pure freshly blended local Ethiopian mango juice",
+    "price": 200,
+    "category": "drinks",
+    "image": "images/mango-juice.png",
+    "ingredients": ["Mango", "Lime", "Ice"]
+  }
+]
