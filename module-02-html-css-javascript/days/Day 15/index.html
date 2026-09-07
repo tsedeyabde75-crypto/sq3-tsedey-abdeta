@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habesha Eatery | Authentic Ethiopian Cuisine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo">Habesha Eatery</div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#reserve">Reserve</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 1. Hero Section: Hero image goes in styles.css as a background image -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Discover Addis’s Real Flavors</h1>
+        <p>Experience real Ethiopian cooking, made with devotion and traditional spices.</p>
+        <a href="#reserve" class="btn">Reserve a Table</a>
+      </div>
+    </section>
+
+    <section id="about" class="about">
+      <h2>Our Story</h2>
+      <p>Located in the heart of Bole, Habesha Eatery brings generations of traditional recipes to your plate. From slow-cooked Doro Wat to freshly baked Injera, our dishes celebrate rich flavor traditions.</p>
+    </section>
+
+    <!-- 2. Menu Section: Each card now includes an <img> tag -->
+    <section id="menu" class="menu-section">
+      <h2>Popular Dishes</h2>
+      <div class="menu-grid">
+        
+        <article class="card">
+          <img src="./images/doro-wet.png" alt="Doro Wat dish">
+          <div class="card-body">
+            <span class="badge">Chef Choice</span>
+            <h3>Doro Wat</h3>
+            <p>Slow-cooked spicy chicken stew with boiled eggs and fresh Injera.</p>
+            <p class="price">ETB 700</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <img src="./images/tibs.png" alt="Beef Tibs dish">
+          <div class="card-body">
+            <span class="badge sale">Special</span>
+            <h3>Beef Tibs</h3>
+            <p>Sautéed tender beef strips cooked with onions, garlic, and rosemary.</p>
+            <p class="price">ETB 1200</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <img src="./images/veggie combo.png" alt="Veggie Combo dish">
+          <div class="card-body">
+            <h3>Veggie Combo</h3>
+            <p>Cabbage, carrots, and potatoes gently sautéed with onions and sweet spices.</p>
+            <p class="price">ETB 1000</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section id="reserve" class="reservation">
+      <h2>Table Reservation</h2>
+      <form class="reserve-form">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required placeholder="Abebe Bikila">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" required placeholder="name@example.com">
+        </div>
+
+        <div class="form-group">
+          <label for="guests">Number of Guests</label>
+          <input type="number" id="guests" name="guests" min="1" max="20" required placeholder="2">
+        </div>
+
+        <div class="form-group">
+          <label for="date">Reservation Date</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+
+        <button type="submit" class="btn submit-btn">Confirm Reservation</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-info">
+      <h3>Habesha Eatery</h3>
+      <p>Bole Road, Next to Mega Building</p>
+      <p>Addis Ababa, Ethiopia</p>
+      <p>Phone: +251 11 600 0000</p>
+      <p>Hours: Mon - Sun | 10:00 AM - 10:00 PM</p>
+    </div>
+    <p class="copyright">&copy; 2026 Habesha Eatery. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
