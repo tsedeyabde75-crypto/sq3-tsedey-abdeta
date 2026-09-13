@@ -1,0 +1,7 @@
+[
+  { "id": 1, "name": "Doro Wat", "category": "Main", "price": 350 },
+  { "id": 2, "name": "Tibs - Spicy", "category": "Grill", "price": 280 },
+  { "id": 3, "name": "Shiro", "category": "Vegan", "price": 180 },
+  { "id": 4, "name": "Beyaynetu", "category": "Vegan", "price": 220 },
+  { "id": 5, "name": "Shekla Tibs", "category": "Grill", "price": 320 }
+]
