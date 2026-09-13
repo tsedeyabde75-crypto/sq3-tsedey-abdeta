@@ -1,0 +1,8 @@
+[
+  { "id": 1, "name": "Doro Wat", "category": "Main", "price": 450 },
+  { "id": 2, "name": "Special Tibs", "category": "Grill", "price": 500 },
+  { "id": 3, "name": "Beyaynetu", "category": "Vegan", "price": 250 },
+  { "id": 4, "name": "Shiro Tegabino", "category": "Vegan", "price": 200 },
+  { "id": 5, "name": "Kitfo", "category": "Main", "price": 550 },
+  { "id": 6, "name": "Fish Cutlet", "category": "Grill", "price": 380 }
+]
