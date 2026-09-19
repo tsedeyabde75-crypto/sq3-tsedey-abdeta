@@ -1,31 +1,21 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-// Updated import path matching your new folder structure
-import Layout from './components/layout/Layout';
-
-import Home from './features/home/Home';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import Menu from './features/menu/Menu';
-import DishDetail from './features/menu/DishDetail';
-import Cart from './features/cart/Cart';
-import Checkout from './features/checkout/Checkout';
-import NotFound from './features/common/NotFound';
+import Home from './features/home/Home';
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Main Application Layout Wrapper */}
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="menu" element={<Menu />} />
-          <Route path="menu/:id" element={<DishDetail />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="checkout" element={<Checkout />} />
-          
-          {/* Catch-all 404 Route */}
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <Router>
+      <Navbar />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} /> 
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/cart" element={<div style={{ padding: '3rem', textAlign: 'center' }}>Cart Implementation Coming in Stage 3</div>} />
+          <Route path="/checkout" element={<div style={{ padding: '3rem', textAlign: 'center' }}>Checkout Implementation Coming in Stage 3</div>} />
+        </Routes>
+      </main>
+    </Router>
   );
 }

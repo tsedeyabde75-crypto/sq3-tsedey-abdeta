@@ -1,0 +1,83 @@
+[
+  {
+    "id": "1",
+    "name": "Doro Wat",
+    "category": "Ethiopian",
+    "price": 450,
+    "description": "Slow-cooked spicy chicken stew with hard-boiled eggs, seasoned with berbere and niter kibbeh.",
+    "isSpicy": true,
+    "image": "/images/doro-wat.jpg"
+  },
+  {
+    "id": "2",
+    "name": "Beyaynetu",
+    "category": "Ethiopian",
+    "price": 350,
+    "description": "A colorful platter of various vegetarian stews including misir wat, kik alicha, and shiro served over injera.",
+    "isSpicy": false,
+    "image": "/images/beyaynetu.jpg"
+  },
+  {
+    "id": "3",
+    "name": "Special Beef Tibs",
+    "category": "Ethiopian",
+    "price": 420,
+    "description": "Sautéed beef strips with onions, garlic, rosemary, and green peppers served sizzled.",
+    "isSpicy": false,
+    "image": "/images/beef-tibs.jpg"
+  },
+  {
+    "id": "4",
+    "name": "Margherita Pizza",
+    "category": "Pizza",
+    "price": 380,
+    "description": "Classic stone-baked pizza topped with fresh tomato sauce, mozzarella, and basil leaves.",
+    "isSpicy": false,
+    "image": "/images/margherita-pizza.jpg"
+  },
+  {
+    "id": "5",
+    "name": "Spicy Meat Lovers Pizza",
+    "category": "Pizza",
+    "price": 480,
+    "description": "Topped with seasoned beef, pepperoni, jalapeños, melted mozzarella, and spicy tomato sauce.",
+    "isSpicy": true,
+    "image": "/images/meat-pizza.jpg"
+  },
+  {
+    "id": "6",
+    "name": "Classic Cheeseburger",
+    "category": "Burgers",
+    "price": 320,
+    "description": "Juicy grilled beef patty topped with cheddar cheese, lettuce, tomato, pickles, and house sauce.",
+    "isSpicy": false,
+    "image": "/images/cheeseburger.jpg"
+  },
+  {
+    "id": "7",
+    "name": "Fresh Avocado Juice (Spris)",
+    "category": "Drinks",
+    "price": 120,
+    "description": "Freshly blended layered avocado and mango juice topped with a squeeze of fresh lime.",
+    "isSpicy": false,
+    "image": "/images/juice.jpg"
+  },
+  {
+    "id": "8",
+    "name": "Tej (Honey Wine)",
+    "category": "Drinks",
+    "price": 150,
+    "description": "Traditional Ethiopian honey wine fermented with gesho, served in a classic glass bottle.",
+    "isSpicy": false,
+    "image": "/images/tej.jpg"
+  },
+  {
+    "id": "9",
+    "name": "Ethiopian Coffee (Buna)",
+    "category": "Drinks",
+    "price": 60,
+    "description": "Freshly roasted and brewed single-origin coffee served in traditional jebena cups with popcorn.",
+    "isSpicy": false,
+    "image": "/images/buna.jpg"
+  }
+]
