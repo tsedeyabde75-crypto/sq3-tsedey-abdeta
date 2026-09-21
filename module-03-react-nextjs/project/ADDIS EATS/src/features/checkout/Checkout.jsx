@@ -18,7 +18,7 @@ export default function Checkout() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    
+
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
@@ -52,6 +52,17 @@ export default function Checkout() {
       setErrors(validationErrors);
       return;
     }
+
+    const newOrder = {
+      id: 'ORD-' + Date.now(),
+      date: new Date().toISOString(),
+      items: cart,
+      total: grandTotal,
+      customer: formData
+    };
+
+    const existingOrders = JSON.parse(localStorage.getItem('addis_eats_orders') || '[]');
+    localStorage.setItem('addis_eats_orders', JSON.stringify([newOrder, ...existingOrders]));
 
     setIsSubmitted(true);
     clearCart();
