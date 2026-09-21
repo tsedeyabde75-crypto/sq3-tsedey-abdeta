@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "name": "Doro Wat",
+    "category": "Ethiopian",
+    "price": 450,
+    "image": "/images/doro-wat.jpg",
+    "description": "Slow-cooked chicken stew with boiled eggs and spiced butter."
+  },
+  {
+    "id": 2,
+    "name": "Beyaynetu",
+    "category": "Ethiopian",
+    "price": 350,
+    "image": "/images/beyaynetu.jpg",
+    "description": "Combination platter of vibrant vegetarian dishes."
+  },
+  {
+    "id": 3,
+    "name": "Special Beef Tibs",
+    "category": "Ethiopian",
+    "price": 420,
+    "image": "/images/tibs.jpg",
+    "description": "Sautéed beef strips with onions, garlic, and rosemary."
+  },
+  {
+    "id": 4,
+    "name": "Margherita Pizza",
+    "category": "Pizza",
+    "price": 380,
+    "image": "/images/pizza.jpg",
+    "description": "Fresh mozzarella, tomato sauce, and basil leaves."
+  }
+]

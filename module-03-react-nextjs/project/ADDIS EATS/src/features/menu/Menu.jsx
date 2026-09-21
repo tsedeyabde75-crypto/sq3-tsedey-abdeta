@@ -1,31 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useFetch } from '../../hooks/useFetch';
 import { useCart } from '../../context/CartContext';
 
 export default function Menu() {
-  const [menuData, setMenuData] = useState([]);
+  const { data: menuData, loading, error } = useFetch('/menu-data.json');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const { addToCart } = useCart();
-
-  useEffect(() => {
-    fetch('/menu-data.json')
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error('Failed to load menu data');
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setMenuData(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
 
   const categories = ['All', 'Ethiopian', 'Pizza', 'Burgers', 'Drinks'];
 
