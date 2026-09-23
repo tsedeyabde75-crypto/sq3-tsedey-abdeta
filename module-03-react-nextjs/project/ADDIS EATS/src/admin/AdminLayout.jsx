@@ -17,6 +17,8 @@ export default function AdminLayout() {
         <h3 style={{ marginBottom: '1.5rem', color: 'var(--brand-orange)' }}>Admin Portal</h3>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           <NavLink to="/admin" end className="nav-item">Dashboard</NavLink>
+          <NavLink to="/admin/menu" className="nav-item">Dish Manager</NavLink>
+          <NavLink to="/admin/orders" className="nav-item">Order Manager</NavLink>
           <button onClick={handleLogout} className="clear-cart-btn" style={{ marginTop: '2rem', textAlign: 'left' }}>
             Logout
           </button>

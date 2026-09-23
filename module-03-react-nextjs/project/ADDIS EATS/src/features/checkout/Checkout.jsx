@@ -55,10 +55,13 @@ export default function Checkout() {
     const newOrder = {
       id: `ORD-${Date.now()}`,
       date: new Date().toLocaleString(),
+      fullName: formData.fullName.trim(),
+      phone: formData.phone.trim(),
+      deliveryAddress: formData.deliveryAddress.trim(),
+      specialNotes: formData.specialNotes.trim(),
       items: cart,
       total,
       estimatedDelivery,
-      specialNotes: formData.specialNotes.trim(),
       status: 'Preparing',
     };
 
@@ -171,7 +174,7 @@ export default function Checkout() {
           
           <div style={{ margin: '1rem 0', padding: '0.75rem', backgroundColor: '#fef3c7', borderRadius: '6px', border: '1px solid #fde68a' }}>
             <strong style={{ color: '#b45309' }}>
-              🕒 {formData.deliveryAddress.trim() ? 'Estimated Delivery Time:' : 'Estimated Time (Base):'}
+              ⏰ {formData.deliveryAddress.trim() ? 'Estimated Delivery Time:' : 'Estimated Time (Base):'}
             </strong>
             <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#92400e', marginTop: '0.25rem' }}>
               {estimatedDelivery}

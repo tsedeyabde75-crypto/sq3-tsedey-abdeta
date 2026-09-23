@@ -1,104 +1,114 @@
 import React, { useState, useEffect } from 'react';
-import DishForm from './DishForm';
 import { formatCurrency } from '../utils/formatCurrency';
+import OrderDetailsModal from './OrderDetailsModal';
 
-export default function DishManager() {
-  const [dishes, setDishes] = useState([]);
-  const [search, setSearch] = useState('');
-  const [editingDish, setEditingDish] = useState(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
+export default function OrderManager() {
+  const [orders, setOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
-    const savedDishes = JSON.parse(localStorage.getItem('addis_eats_dishes') || '[]');
-    if (savedDishes.length > 0) {
-      setDishes(savedDishes);
-    } else {
-      fetch('/menu-data.json')
-        .then((res) => res.json())
-        .then((data) => {
-          setDishes(data);
-          localStorage.setItem('addis_eats_dishes', JSON.stringify(data));
-        })
-        .catch((err) => console.error('Failed to seed menu data', err));
-    }
+    const checkAndAutoUpdateStatuses = () => {
+      const savedOrders = JSON.parse(localStorage.getItem('addis_eats_orders') || '[]');
+      const now = Date.now();
+
+      const updated = savedOrders.map((order) => {
+        const timestamp = parseInt(order.id.replace('ORD-', ''), 10);
+        if (isNaN(timestamp)) return order;
+
+        const elapsedSeconds = Math.floor((now - timestamp) / 1000);
+
+        let newStatus = order.status;
+
+        if (elapsedSeconds >= 120) {
+          newStatus = 'Delivered';
+        } else if (elapsedSeconds >= 60) {
+          newStatus = 'Delivering';
+        } else if (elapsedSeconds >= 20) {
+          newStatus = 'Preparing';
+        } else {
+          newStatus = 'Pending';
+        }
+
+        return { ...order, status: newStatus };
+      });
+
+      setOrders(updated);
+      localStorage.setItem('addis_eats_orders', JSON.stringify(updated));
+    };
+
+    checkAndAutoUpdateStatuses();
+    const interval = setInterval(checkAndAutoUpdateStatuses, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  const saveToStorage = (updated) => {
-    setDishes(updated);
-    localStorage.setItem('addis_eats_dishes', JSON.stringify(updated));
+  const handleStatusChange = (orderId, newStatus) => {
+    const updatedOrders = orders.map((order) =>
+      order.id === orderId ? { ...order, status: newStatus } : order
+    );
+    setOrders(updatedOrders);
+    localStorage.setItem('addis_eats_orders', JSON.stringify(updatedOrders));
   };
 
-  const handleSaveDish = (dish) => {
-    const exists = dishes.some((d) => d.id === dish.id);
-    let updated;
-    if (exists) {
-      updated = dishes.map((d) => (d.id === dish.id ? dish : d));
-    } else {
-      updated = [dish, ...dishes];
-    }
-    saveToStorage(updated);
-    setIsFormOpen(false);
-    setEditingDish(null);
-  };
-
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this dish?')) {
-      const updated = dishes.filter((d) => d.id !== id);
-      saveToStorage(updated);
+  const handleDeleteOrder = (orderId) => {
+    if (window.confirm('Are you sure you want to delete this order?')) {
+      const updatedOrders = orders.filter((order) => order.id !== orderId);
+      setOrders(updatedOrders);
+      localStorage.setItem('addis_eats_orders', JSON.stringify(updatedOrders));
     }
   };
-
-  const filteredDishes = dishes.filter((dish) =>
-    dish.name.toLowerCase().includes(search.toLowerCase())
-  );
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h2>Dish Manager</h2>
-        <button onClick={() => { setEditingDish(null); setIsFormOpen(true); }} className="add-to-cart-btn">
-          + Add New Dish
-        </button>
-      </div>
+      <h2 style={{ marginBottom: '1.5rem' }}>Order Manager</h2>
 
-      <input
-        type="text"
-        placeholder="Search dishes..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{ width: '100%', padding: '0.5rem', marginBottom: '1.5rem', borderRadius: '4px', border: '1px solid var(--border-color)' }}
-      />
-
-      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-        <thead>
-          <tr style={{ borderBottom: '2px solid var(--border-color)' }}>
-            <th style={{ padding: '0.75rem' }}>Name</th>
-            <th style={{ padding: '0.75rem' }}>Category</th>
-            <th style={{ padding: '0.75rem' }}>Price</th>
-            <th style={{ padding: '0.75rem' }}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredDishes.map((dish) => (
-            <tr key={dish.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-              <td style={{ padding: '0.75rem' }}>{dish.name}</td>
-              <td style={{ padding: '0.75rem' }}>{dish.category}</td>
-              <td style={{ padding: '0.75rem' }}>{formatCurrency(dish.price)}</td>
-              <td style={{ padding: '0.75rem', display: 'flex', gap: '0.5rem' }}>
-                <button onClick={() => { setEditingDish(dish); setIsFormOpen(true); }} style={{ padding: '0.25rem 0.5rem', cursor: 'pointer' }}>Edit</button>
-                <button onClick={() => handleDelete(dish.id)} style={{ padding: '0.25rem 0.5rem', color: '#ef4444', cursor: 'pointer' }}>Delete</button>
-              </td>
+      {orders.length === 0 ? (
+        <p style={{ color: '#6b7280' }}>No orders found.</p>
+      ) : (
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+          <thead>
+            <tr style={{ borderBottom: '2px solid var(--border-color)' }}>
+              <th style={{ padding: '0.75rem' }}>Order ID</th>
+              <th style={{ padding: '0.75rem' }}>Customer</th>
+              <th style={{ padding: '0.75rem' }}>Total</th>
+              <th style={{ padding: '0.75rem' }}>Status</th>
+              <th style={{ padding: '0.75rem' }}>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {orders.map((order) => (
+              <tr key={order.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                <td style={{ padding: '0.75rem', fontWeight: 'bold' }}>#{order.id}</td>
+                <td style={{ padding: '0.75rem' }}>{order.fullName || order.customerName || order.name || 'N/A'}</td>
+                <td style={{ padding: '0.75rem' }}>{formatCurrency(order.total)}</td>
+                <td style={{ padding: '0.75rem' }}>
+                  <select
+                    value={order.status || 'Pending'}
+                    onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                    style={{ padding: '0.25rem 0.5rem', borderRadius: '4px' }}
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Preparing">Preparing</option>
+                    <option value="Delivering">Delivering</option>
+                    <option value="Delivered">Delivered</option>
+                  </select>
+                </td>
+                <td style={{ padding: '0.75rem', display: 'flex', gap: '0.5rem' }}>
+                  <button onClick={() => setSelectedOrder(order)} style={{ padding: '0.25rem 0.5rem', cursor: 'pointer' }}>
+                    View
+                  </button>
+                  <button onClick={() => handleDeleteOrder(order.id)} style={{ padding: '0.25rem 0.5rem', color: '#dc2626', cursor: 'pointer' }}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
-      {isFormOpen && (
-        <DishForm
-          initialData={editingDish}
-          onSubmit={handleSaveDish}
-          onClose={() => { setIsFormOpen(false); setEditingDish(null); }}
-        />
+      {selectedOrder && (
+        <OrderDetailsModal order={selectedOrder} onClose={() => setSelectedOrder(null)} />
       )}
     </div>
   );

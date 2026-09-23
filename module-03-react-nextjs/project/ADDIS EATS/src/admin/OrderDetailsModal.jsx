@@ -10,10 +10,10 @@ export default function OrderDetailsModal({ order, onClose }) {
         <h3 style={{ marginBottom: '1rem' }}>Order Details #{order.id}</h3>
         
         <div style={{ marginBottom: '1rem', fontSize: '0.9rem', lineHeight: '1.5' }}>
-          <p><strong>Customer:</strong> {order.customerName}</p>
-          <p><strong>Phone:</strong> {order.phone}</p>
-          <p><strong>Address/Area:</strong> {order.deliveryArea || order.address}</p>
-          {order.notes && <p><strong>Notes:</strong> {order.notes}</p>}
+          <p><strong>Customer:</strong> {order.fullName || 'N/A'}</p>
+          <p><strong>Phone:</strong> {order.phone || 'N/A'}</p>
+          <p><strong>Address/Area:</strong> {order.deliveryAddress || 'N/A'}</p>
+          {order.specialNotes && <p><strong>Notes:</strong> {order.specialNotes}</p>}
         </div>
 
         <h4>Items</h4>
