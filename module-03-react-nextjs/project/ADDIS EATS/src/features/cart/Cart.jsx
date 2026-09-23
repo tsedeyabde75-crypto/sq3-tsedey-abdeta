@@ -1,68 +1,99 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 export default function Cart() {
-  const { cart, updateQuantity, removeFromCart, clearCart, subtotal, deliveryFee, grandTotal } = useCart();
+  const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
+  const navigate = useNavigate();
+
+  const subtotal = cart.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
+  const deliveryFee = subtotal > 0 ? 100 : 0;
+  const total = subtotal + deliveryFee;
 
   if (cart.length === 0) {
     return (
-      <div className="empty-cart-view">
+      <div style={{ textAlign: 'center', padding: '3rem' }}>
         <h2>Your Cart is Empty</h2>
-        <p>Looks like you haven't added any dishes to your order yet.</p>
-        <Link to="/menu" className="primary-cta-btn">
-          Explore Menu
-        </Link>
+        <p>Explore our delicious menu to add items.</p>
+        <Link to="/menu" style={{ color: '#d97706', fontWeight: 'bold' }}>Browse Menu</Link>
       </div>
     );
   }
 
   return (
-    <div className="cart-page">
+    <div style={{ maxWidth: '1000px', margin: '2rem auto', padding: '0 1rem' }}>
       <h1>Your Order</h1>
-      <div className="cart-layout">
-        <div className="cart-items-list">
+
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem', marginTop: '1.5rem' }}>
+        <div>
           {cart.map((item) => (
-            <div key={item.id} className="cart-item-card">
-              <img src={item.image} alt={item.name} className="cart-item-img" />
-              <div className="cart-item-details">
-                <h3>{item.name}</h3>
-                <p className="cart-item-price">{item.price} ETB</p>
+            <div
+              key={item.id}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '1rem',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                marginBottom: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', borderRadius: '6px', objectFit: 'cover' }} />
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1rem' }}>{item.name}</h3>
+                  <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>{formatCurrency(item.price)}</span>
+                </div>
               </div>
-              <div className="quantity-controls">
-                <button onClick={() => updateQuantity(item.id, -1)}>-</button>
-                <span>{item.quantity}</span>
-                <button onClick={() => updateQuantity(item.id, 1)}>+</button>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1px solid #e5e7eb', borderRadius: '4px', padding: '0.2rem 0.5rem' }}>
+                  <button onClick={() => updateQuantity(item.id, -1)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>-</button>
+                  <span>{item.quantity || 1}</span>
+                  <button onClick={() => updateQuantity(item.id, 1)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}>+</button>
+                </div>
+
+                <strong style={{ color: '#d97706' }}>{formatCurrency(item.price * (item.quantity || 1))}</strong>
+
+                <button onClick={() => removeFromCart(item.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1.2rem' }}>
+                  ✕
+                </button>
               </div>
-              <p className="cart-item-total">{item.price * item.quantity} ETB</p>
-              <button className="remove-btn" onClick={() => removeFromCart(item.id)}>
-                ✕
-              </button>
             </div>
           ))}
-          <button className="clear-cart-btn" onClick={clearCart}>
+
+          <button
+            onClick={clearCart}
+            style={{ padding: '0.5rem 1rem', border: '1px solid #ef4444', color: '#ef4444', backgroundColor: 'transparent', borderRadius: '6px', cursor: 'pointer' }}
+          >
             Clear Cart
           </button>
         </div>
 
-        <div className="order-summary-card">
-          <h2>Summary</h2>
-          <div className="summary-row">
+        <div style={{ border: '1px solid #e5e7eb', padding: '1.5rem', borderRadius: '8px', height: 'fit-content', backgroundColor: '#fafafa' }}>
+          <h3>Summary</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', margin: '0.5rem 0' }}>
             <span>Subtotal</span>
-            <span>{subtotal} ETB</span>
+            <span>{formatCurrency(subtotal)}</span>
           </div>
-          <div className="summary-row">
+          <div style={{ display: 'flex', justifyContent: 'space-between', margin: '0.5rem 0' }}>
             <span>Delivery Fee</span>
-            <span>{deliveryFee} ETB</span>
+            <span>{formatCurrency(deliveryFee)}</span>
           </div>
-          <hr />
-          <div className="summary-row grand-total">
+          <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', margin: '1rem 0' }} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '1rem' }}>
             <span>Total</span>
-            <span>{grandTotal} ETB</span>
+            <span>{formatCurrency(total)}</span>
           </div>
-          <Link to="/checkout" className="checkout-btn">
+
+          <button
+            onClick={() => navigate('/checkout')}
+            style={{ width: '100%', padding: '0.75rem', backgroundColor: '#d97706', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}
+          >
             Proceed to Checkout
-          </Link>
+          </button>
         </div>
       </div>
     </div>

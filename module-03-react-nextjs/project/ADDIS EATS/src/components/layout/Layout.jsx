@@ -1,8 +1,15 @@
+import React from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
+import './Layout.css';
 
 export default function Layout() {
+  const { totalItems } = useCart();
+
   const getNavLinkClass = ({ isActive }) => 
     isActive ? 'nav-link active' : 'nav-link';
+
+  const safeItemCount = typeof totalItems === 'number' && !isNaN(totalItems) ? totalItems : 0;
 
   return (
     <div className="layout-wrapper">
@@ -15,7 +22,32 @@ export default function Layout() {
           <nav className="main-nav">
             <NavLink to="/" className={getNavLinkClass} end>Home</NavLink>
             <NavLink to="/menu" className={getNavLinkClass}>Menu</NavLink>
-            <NavLink to="/cart" className={getNavLinkClass}>Cart</NavLink>
+            <NavLink to="/favorites" className={getNavLinkClass}>Favorites</NavLink>
+            <NavLink to="/orders" className={getNavLinkClass}>Orders</NavLink>
+            
+            <NavLink to="/cart" className={getNavLinkClass} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+              <span>Cart</span>
+              {safeItemCount > 0 && (
+                <span
+                  style={{
+                    backgroundColor: '#d97706',
+                    color: '#ffffff',
+                    fontSize: '0.75rem',
+                    fontWeight: 'bold',
+                    borderRadius: '50%',
+                    width: '18px',
+                    height: '18px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    lineHeight: '1',
+                  }}
+                >
+                  {safeItemCount}
+                </span>
+              )}
+            </NavLink>
+
             <NavLink to="/checkout" className={getNavLinkClass}>Checkout</NavLink>
           </nav>
         </div>

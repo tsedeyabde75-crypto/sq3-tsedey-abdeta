@@ -4,37 +4,33 @@ const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem('addis_eats_cart');
-    return savedCart ? JSON.parse(savedCart) : [];
+    const saved = localStorage.getItem('addis_eats_cart');
+    return saved ? JSON.parse(saved) : [];
   });
 
   useEffect(() => {
     localStorage.setItem('addis_eats_cart', JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (item) => {
+  const addToCart = (dish) => {
     setCart((prevCart) => {
-      const existing = prevCart.find((i) => i.id === item.id);
+      const existing = prevCart.find((item) => item.id === dish.id);
       if (existing) {
-        return prevCart.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+        return prevCart.map((item) =>
+          item.id === dish.id ? { ...item, quantity: (item.quantity || 1) + 1 } : item
         );
       }
-      return [...prevCart, { ...item, quantity: 1 }];
+      return [...prevCart, { ...dish, quantity: 1 }];
     });
   };
 
-  const removeFromCart = (id) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
-  };
-
-  const updateQuantity = (id, delta) => {
+  const updateQuantity = (dishId, amount) => {
     setCart((prevCart) =>
       prevCart
         .map((item) => {
-          if (item.id === id) {
-            const newQty = item.quantity + delta;
-            return newQty > 0 ? { ...item, quantity: newQty } : null;
+          if (item.id === dishId) {
+            const newQuantity = (item.quantity || 1) + amount;
+            return newQuantity > 0 ? { ...item, quantity: newQuantity } : null;
           }
           return item;
         })
@@ -42,26 +38,23 @@ export function CartProvider({ children }) {
     );
   };
 
-  const clearCart = () => {
-    setCart([]);
-    localStorage.removeItem('addis_eats_cart');
+  const removeFromCart = (dishId) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== dishId));
   };
 
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const deliveryFee = cart.length > 0 ? 100 : 0;
-  const grandTotal = subtotal + deliveryFee;
+  const clearCart = () => setCart([]);
+
+  const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
   return (
     <CartContext.Provider
       value={{
         cart,
         addToCart,
-        removeFromCart,
         updateQuantity,
+        removeFromCart,
         clearCart,
-        subtotal,
-        deliveryFee,
-        grandTotal
+        totalItems,
       }}
     >
       {children}

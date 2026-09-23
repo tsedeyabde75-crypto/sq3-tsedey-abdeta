@@ -70,14 +70,5 @@
     "description": "Traditional Ethiopian honey wine fermented with gesho, served in a classic glass bottle.",
     "isSpicy": false,
     "image": "/images/tej.jpg"
-  },
-  {
-    "id": "9",
-    "name": "Ethiopian Coffee (Buna)",
-    "category": "Drinks",
-    "price": 60,
-    "description": "Freshly roasted and brewed single-origin coffee served in traditional jebena cups with popcorn.",
-    "isSpicy": false,
-    "image": "/images/buna.jpg"
   }
 ]
