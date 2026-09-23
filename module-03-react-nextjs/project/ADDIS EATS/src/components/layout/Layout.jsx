@@ -25,7 +25,17 @@ export default function Layout() {
             <NavLink to="/favorites" className={getNavLinkClass}>Favorites</NavLink>
             <NavLink to="/orders" className={getNavLinkClass}>Orders</NavLink>
             
-            <NavLink to="/cart" className={getNavLinkClass} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+            <NavLink 
+              to="/cart" 
+              className={getNavLinkClass} 
+              style={{ 
+                position: 'relative', 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '0.35rem',
+                whiteSpace: 'nowrap'
+              }}
+            >
               <span>Cart</span>
               {safeItemCount > 0 && (
                 <span
@@ -41,6 +51,7 @@ export default function Layout() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     lineHeight: '1',
+                    flexShrink: 0
                   }}
                 >
                   {safeItemCount}
@@ -58,7 +69,7 @@ export default function Layout() {
       </main>
 
       <footer className="main-footer">
-        <p>© {new Date().getFullYear()} Addis Eats. Built for CodeOps Module 3 Capstone.</p>
+        <p>© {new Date().getFullYear()} Addis Eats. All rights reserved.</p>
       </footer>
     </div>
   );
