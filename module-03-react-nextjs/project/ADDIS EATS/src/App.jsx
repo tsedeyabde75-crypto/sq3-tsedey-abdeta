@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
@@ -12,24 +11,44 @@ import OrderHistory from './features/orders/OrderHistory';
 import { CartProvider } from './context/CartContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 
+import { AdminAuthProvider } from './admin/useAdminAuth';
+import RequireAdmin from './admin/RequireAdmin';
+import AdminLayout from './admin/AdminLayout';
+import AdminLogin from './admin/AdminLogin';
+import Dashboard from './admin/Dashboard';
+import DishManager from './admin/DishManager';
+import OrderManager from './admin/OrderManager';
+
 export default function App() {
   return (
-    <CartProvider>
-      <FavoritesProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Home />} />
-              <Route path="menu" element={<Menu />} />
-              <Route path="menu/:id" element={<DishDetail />} />
-              <Route path="cart" element={<Cart />} />
-              <Route path="checkout" element={<Checkout />} />
-              <Route path="favorites" element={<Favorites />} />
-              <Route path="orders" element={<OrderHistory />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </FavoritesProvider>
-    </CartProvider>
+    <AdminAuthProvider>
+      <CartProvider>
+        <FavoritesProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="menu" element={<Menu />} />
+                <Route path="menu/:id" element={<DishDetail />} />
+                <Route path="cart" element={<Cart />} />
+                <Route path="checkout" element={<Checkout />} />
+                <Route path="favorites" element={<Favorites />} />
+                <Route path="orders" element={<OrderHistory />} />
+              </Route>
+
+              <Route path="/admin/login" element={<AdminLogin />} />
+
+              <Route element={<RequireAdmin />}>
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<Dashboard />} />
+                  <Route path="menu" element={<DishManager />} />
+                  <Route path="orders" element={<OrderManager />} />
+                </Route>
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </FavoritesProvider>
+      </CartProvider>
+    </AdminAuthProvider>
   );
 }
