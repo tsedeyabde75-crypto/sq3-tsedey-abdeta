@@ -1,49 +1,35 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 export default function Checkout() {
-  const { cart, clearCart } = useCart();
+  const { cart = [], clearCart } = useCart();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [orderDetails, setOrderDetails] = useState(null);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     phone: '',
-    deliveryAddress: '',
-    specialNotes: '',
-    paymentMethod: 'cash',
+    deliveryArea: 'Bole',
+    deliveryNotes: ''
   });
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const deliveryFee = subtotal > 0 ? 100 : 0;
-  const total = subtotal + deliveryFee;
-
-  const calculateDeliveryTime = (itemCount, address) => {
-    const basePrepTime = 20;
-    const additionalTimePerItem = 5;
-    let distanceExtraMinutes = 0;
-
-    const lowerAddress = address.toLowerCase();
-
-    if (lowerAddress.includes('akaki') || lowerAddress.includes('kality') || lowerAddress.includes('cmc')) {
-      distanceExtraMinutes = 20;
-    } else if (lowerAddress.includes('bole') || lowerAddress.includes('kazanchis')) {
-      distanceExtraMinutes = 10;
-    } else if (address.trim().length > 5) {
-      distanceExtraMinutes = 15;
-    }
-
-    const minTime = basePrepTime + itemCount * additionalTimePerItem + distanceExtraMinutes;
-    const maxTime = minTime + 15;
-
-    return `${minTime} – ${maxTime} mins`;
+  const deliveryTimes = {
+    Bole: '25 - 35 mins',
+    Kazanchis: '30 - 40 mins',
+    Piazza: '35 - 45 mins',
+    CMC: '40 - 50 mins',
+    Sarbet: '30 - 40 mins',
+    'Akaki Kality': '45 - 60 mins'
   };
 
-  const estimatedDelivery = calculateDeliveryTime(totalItems, formData.deliveryAddress);
+  const currentDeliveryTime = deliveryTimes[formData.deliveryArea] || '30 - 45 mins';
+
+  const subtotal = cart.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
+  const deliveryFee = cart.length > 0 ? 50 : 0;
+  const grandTotal = subtotal + deliveryFee;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -52,162 +38,326 @@ export default function Checkout() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (cart.length === 0) return;
+
     const newOrder = {
-      id: `ORD-${Date.now()}`,
-      date: new Date().toLocaleString(),
-      fullName: formData.fullName.trim(),
-      phone: formData.phone.trim(),
-      deliveryAddress: formData.deliveryAddress.trim(),
-      specialNotes: formData.specialNotes.trim(),
-      items: cart,
-      total,
-      estimatedDelivery,
-      status: 'Preparing',
+      orderId: `ORD-${Date.now().toString().slice(-6)}`,
+      items: [...cart],
+      subtotal,
+      deliveryFee,
+      totalAmount: grandTotal,
+      estimatedDelivery: currentDeliveryTime,
+      customer: { ...formData },
+      date: new Date().toLocaleDateString()
     };
 
-    const existingOrders = JSON.parse(localStorage.getItem('addis_eats_orders') || '[]');
-    localStorage.setItem('addis_eats_orders', JSON.stringify([newOrder, ...existingOrders]));
+    try {
+      const existingOrders = JSON.parse(localStorage.getItem('addis_eats_orders') || '[]');
+      localStorage.setItem('addis_eats_orders', JSON.stringify([newOrder, ...existingOrders]));
+    } catch (err) {
+      console.error('Failed to save order to localStorage:', err);
+    }
 
+    setOrderDetails(newOrder);
     setIsSubmitted(true);
-    clearCart();
 
-    setTimeout(() => {
-      navigate('/orders');
-    }, 2000);
+    if (typeof clearCart === 'function') {
+      clearCart();
+    }
   };
 
-  if (isSubmitted) {
+  if (isSubmitted && orderDetails) {
     return (
-      <div style={{ textAlign: 'center', padding: '4rem 1rem', maxWidth: '600px', margin: '0 auto' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
-        <h2 style={{ color: '#059669', marginBottom: '0.5rem' }}>Order Placed Successfully!</h2>
-        <p style={{ color: '#4b5563', fontSize: '1.1rem' }}>
-          Thank you for ordering with Addis Eats. Redirecting you to your Order History...
+      <div
+        style={{
+          maxWidth: '550px',
+          margin: '2rem auto',
+          padding: '2rem',
+          backgroundColor: '#f0fdf4',
+          border: '1px solid #bbf7d0',
+          borderRadius: '12px',
+          textAlign: 'center'
+        }}
+      >
+        <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🎉</div>
+        <h2 style={{ color: '#166534', marginBottom: '0.5rem' }}>
+          Order Confirmed!
+        </h2>
+        <p style={{ color: '#15803d', marginBottom: '1.5rem' }}>
+          Thank you, <strong>{orderDetails.customer.name}</strong>! Your order has been placed successfully.
         </p>
+
+        <div
+          style={{
+            backgroundColor: '#ffffff',
+            padding: '1.25rem',
+            borderRadius: '8px',
+            border: '1px solid #e5e7eb',
+            textAlign: 'left',
+            marginBottom: '1.5rem'
+          }}
+        >
+          <p style={{ margin: '0 0 0.5rem 0' }}>
+            <strong>Order ID:</strong> #{orderDetails.orderId}
+          </p>
+          <p style={{ margin: '0 0 0.5rem 0' }}>
+            <strong>Delivery Area:</strong> {orderDetails.customer.deliveryArea}
+          </p>
+          <p style={{ margin: '0 0 0.5rem 0', color: '#2563eb', fontWeight: 'bold' }}>
+            <strong>Estimated Delivery:</strong> ⏱️ {orderDetails.estimatedDelivery}
+          </p>
+          {orderDetails.customer.deliveryNotes && (
+            <p style={{ margin: '0 0 0.5rem 0' }}>
+              <strong>Delivery Notes:</strong> {orderDetails.customer.deliveryNotes}
+            </p>
+          )}
+
+          <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', margin: '0.75rem 0' }} />
+
+          <p style={{ fontWeight: 'bold', margin: '0 0 0.5rem 0', fontSize: '0.95rem' }}>Items Ordered:</p>
+          <ul style={{ paddingLeft: '1.25rem', margin: '0 0 0.75rem 0', fontSize: '0.9rem', color: '#374151' }}>
+            {orderDetails.items.map((item) => (
+              <li key={item.id}>
+                {item.name} × {item.quantity || 1} ({formatCurrency(item.price * (item.quantity || 1))})
+              </li>
+            ))}
+          </ul>
+
+          <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', margin: '0.75rem 0' }} />
+          <p style={{ margin: 0, fontWeight: 'bold', color: '#d97706', fontSize: '1.1rem' }}>
+            Total Paid: {formatCurrency(orderDetails.totalAmount)}
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+          <button
+            onClick={() => navigate('/menu')}
+            style={{
+              padding: '0.65rem 1.25rem',
+              backgroundColor: '#d97706',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
+            Back to Menu
+          </button>
+          <button
+            onClick={() => navigate('/orders')}
+            style={{
+              padding: '0.65rem 1.25rem',
+              backgroundColor: '#fff',
+              color: '#374151',
+              border: '1px solid #d1d5db',
+              borderRadius: '6px',
+              cursor: 'pointer'
+            }}
+          >
+            View Order History
+          </button>
+        </div>
       </div>
     );
   }
 
   if (cart.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '3rem' }}>
-        <h2>Your Cart is Empty</h2>
-        <p>Add some items to your cart before proceeding to checkout.</p>
+      <div style={{ maxWidth: '900px', margin: '2rem auto', padding: '1rem', textAlign: 'center' }}>
+        <p style={{ color: '#6b7280' }}>
+          Your cart is empty. <Link to="/menu" style={{ color: '#d97706' }}>Browse Menu</Link>
+        </p>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: '800px', margin: '2rem auto', padding: '0 1rem' }}>
-      <h1>Checkout</h1>
+    <div style={{ maxWidth: '900px', margin: '2rem auto', padding: '1rem' }}>
+      <h2 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '1.75rem', fontWeight: 'bold' }}>
+        Addis Eats Checkout
+      </h2>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '1.5rem' }}>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: 'bold' }}>Full Name</label>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gap: '2rem',
+          alignItems: 'start'
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>Full Name</label>
             <input
               type="text"
-              name="fullName"
-              required
-              value={formData.fullName}
+              name="name"
+              placeholder="e.g. Abebe Bikila"
+              value={formData.name}
               onChange={handleChange}
-              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+              required
+              style={{
+                padding: '0.75rem',
+                borderRadius: '6px',
+                border: '1px solid #d1d5db',
+                fontSize: '0.95rem'
+              }}
             />
           </div>
 
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: 'bold' }}>Phone Number</label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>TeleBirr Phone Number</label>
             <input
               type="tel"
               name="phone"
-              required
+              placeholder="0911223344 or +251911223344"
               value={formData.phone}
               onChange={handleChange}
-              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
-            />
-          </div>
-
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: 'bold' }}>Delivery Address</label>
-            <textarea
-              name="deliveryAddress"
               required
-              rows="3"
-              placeholder="e.g. Bole, Akaki Kality, CMC..."
-              value={formData.deliveryAddress}
-              onChange={handleChange}
-              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+              style={{
+                padding: '0.75rem',
+                borderRadius: '6px',
+                border: '1px solid #d1d5db',
+                fontSize: '0.95rem'
+              }}
             />
           </div>
 
-          <div>
-            <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: 'bold' }}>Special Instructions / Notes</label>
-            <textarea
-              name="specialNotes"
-              rows="2"
-              placeholder="e.g. Make it extra spicy, call upon arrival..."
-              value={formData.specialNotes}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>Delivery Area</label>
+            <select
+              name="deliveryArea"
+              value={formData.deliveryArea}
               onChange={handleChange}
-              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+              style={{
+                padding: '0.75rem',
+                borderRadius: '6px',
+                border: '1px solid #d1d5db',
+                backgroundColor: '#f9fafb',
+                fontSize: '0.95rem'
+              }}
+            >
+              <option value="Bole">Bole</option>
+              <option value="Kazanchis">Kazanchis</option>
+              <option value="Piazza">Piazza</option>
+              <option value="CMC">CMC</option>
+              <option value="Sarbet">Sarbet</option>
+              <option value="Akaki Kality">Akaki Kality</option>
+            </select>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>Delivery Notes (Optional)</label>
+            <textarea
+              name="deliveryNotes"
+              placeholder="e.g. Near Edna Mall, 2nd floor"
+              value={formData.deliveryNotes}
+              onChange={handleChange}
+              rows="3"
+              style={{
+                padding: '0.75rem',
+                borderRadius: '6px',
+                border: '1px solid #d1d5db',
+                fontSize: '0.95rem',
+                fontFamily: 'inherit'
+              }}
             />
+          </div>
+        </div>
+
+        <div
+          style={{
+            backgroundColor: '#f9fafb',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            padding: '1.25rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.75rem'
+          }}
+        >
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', margin: '0 0 0.5rem 0' }}>
+            Order Summary
+          </h3>
+
+          {cart.map((item) => (
+            <div
+              key={item.id}
+              style={{
+                display: 'flex',
+                justify: 'space-between',
+                fontSize: '0.9rem',
+                color: '#4b5563'
+              }}
+            >
+              <span>{item.name} × {item.quantity || 1}</span>
+              <span>{formatCurrency(item.price * (item.quantity || 1))}</span>
+            </div>
+          ))}
+
+          <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', margin: '0.5rem 0' }} />
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+            <span>Subtotal</span>
+            <span>{formatCurrency(subtotal)}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
+            <span>Delivery Fee</span>
+            <span>{formatCurrency(deliveryFee)}</span>
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              justify: 'space-between',
+              fontSize: '0.9rem',
+              backgroundColor: '#eff6ff',
+              padding: '0.5rem 0.75rem',
+              borderRadius: '6px',
+              color: '#1d4ed8',
+              fontWeight: '500',
+              marginTop: '0.25rem'
+            }}
+          >
+            <span>Est. Delivery Time</span>
+            <span>⏱️ {currentDeliveryTime}</span>
+          </div>
+
+          <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', margin: '0.5rem 0' }} />
+
+          <div
+            style={{
+              display: 'flex',
+              justify: 'space-between',
+              fontWeight: 'bold',
+              fontSize: '1.05rem',
+              color: '#111827'
+            }}
+          >
+            <span>Total</span>
+            <span style={{ color: '#d97706' }}>{formatCurrency(grandTotal)}</span>
           </div>
 
           <button
             type="submit"
             style={{
+              marginTop: '1rem',
+              padding: '0.85rem',
               backgroundColor: '#d97706',
               color: '#fff',
-              padding: '0.75rem',
               border: 'none',
               borderRadius: '6px',
               fontWeight: 'bold',
+              fontSize: '1rem',
               cursor: 'pointer',
-              marginTop: '1rem'
+              width: '100%'
             }}
           >
-            Place Order ({formatCurrency(total)})
+            Order {formatCurrency(grandTotal)}
           </button>
-        </form>
-
-        <div style={{ border: '1px solid #e5e7eb', padding: '1.5rem', borderRadius: '8px', backgroundColor: '#f9fafb', height: 'fit-content' }}>
-          <h2>Order Summary</h2>
-          
-          <div style={{ margin: '1rem 0', padding: '0.75rem', backgroundColor: '#fef3c7', borderRadius: '6px', border: '1px solid #fde68a' }}>
-            <strong style={{ color: '#b45309' }}>
-              ⏰ {formData.deliveryAddress.trim() ? 'Estimated Delivery Time:' : 'Estimated Time (Base):'}
-            </strong>
-            <div style={{ fontSize: '1.1rem', fontWeight: 'bold', color: '#92400e', marginTop: '0.25rem' }}>
-              {estimatedDelivery}
-            </div>
-          </div>
-
-          {cart.map((item) => (
-            <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <span>{item.name} x {item.quantity}</span>
-              <span>{formatCurrency(item.price * item.quantity)}</span>
-            </div>
-          ))}
-
-          <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', margin: '1rem 0' }} />
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span>Subtotal</span>
-            <span>{formatCurrency(subtotal)}</span>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span>Delivery Fee</span>
-            <span>{formatCurrency(deliveryFee)}</span>
-          </div>
-
-          <hr style={{ border: 'none', borderTop: '1px solid #e5e7eb', margin: '1rem 0' }} />
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '1.1rem' }}>
-            <span>Total</span>
-            <span>{formatCurrency(total)}</span>
-          </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

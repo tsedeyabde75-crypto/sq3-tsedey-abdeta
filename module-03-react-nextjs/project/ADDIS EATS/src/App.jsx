@@ -8,8 +8,12 @@ import Cart from './features/cart/Cart';
 import Checkout from './features/checkout/Checkout';
 import Favorites from './features/favorites/Favorites';
 import OrderHistory from './features/orders/OrderHistory';
+import Login from './features/auth/Login';
+
+import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { FavoritesProvider } from './context/FavoritesContext';
+import RequireAuth from './components/RequireAuth';
 
 import { AdminAuthProvider } from './admin/useAdminAuth';
 import RequireAdmin from './admin/RequireAdmin';
@@ -22,33 +26,41 @@ import OrderManager from './admin/OrderManager';
 export default function App() {
   return (
     <AdminAuthProvider>
-      <CartProvider>
-        <FavoritesProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path="menu" element={<Menu />} />
-                <Route path="menu/:id" element={<DishDetail />} />
-                <Route path="cart" element={<Cart />} />
-                <Route path="checkout" element={<Checkout />} />
-                <Route path="favorites" element={<Favorites />} />
-                <Route path="orders" element={<OrderHistory />} />
-              </Route>
+      <AuthProvider>
+        <CartProvider>
+          <FavoritesProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<Home />} />
+                  <Route path="menu" element={<Menu />} />
+                  <Route path="menu/:slug" element={<DishDetail />} />
+                  <Route path="cart" element={<Cart />} />
+                  <Route path="login" element={<Login />} />
 
-              <Route path="/admin/login" element={<AdminLogin />} />
+                  {/* Protected Checkout Route */}
+                  <Route element={<RequireAuth />}>
+                    <Route path="checkout" element={<Checkout />} />
+                  </Route>
 
-              <Route element={<RequireAdmin />}>
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<Dashboard />} />
-                  <Route path="menu" element={<DishManager />} />
-                  <Route path="orders" element={<OrderManager />} />
+                  <Route path="favorites" element={<Favorites />} />
+                  <Route path="orders" element={<OrderHistory />} />
                 </Route>
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </FavoritesProvider>
-      </CartProvider>
+
+                <Route path="/admin/login" element={<AdminLogin />} />
+
+                <Route element={<RequireAdmin />}>
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<Dashboard />} />
+                    <Route path="menu" element={<DishManager />} />
+                    <Route path="orders" element={<OrderManager />} />
+                  </Route>
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </FavoritesProvider>
+        </CartProvider>
+      </AuthProvider>
     </AdminAuthProvider>
   );
 }

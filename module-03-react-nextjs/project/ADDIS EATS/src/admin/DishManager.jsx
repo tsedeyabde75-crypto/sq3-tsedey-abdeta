@@ -10,6 +10,8 @@ export default function DishManager() {
   const [category, setCategory] = useState('Ethiopian');
   const [image, setImage] = useState('');
 
+  const [editingId, setEditingId] = useState(null);
+
   useEffect(() => {
     const savedDishes = localStorage.getItem('addis_eats_custom_dishes');
     if (savedDishes) {
@@ -27,25 +29,68 @@ export default function DishManager() {
     }
   }, []);
 
-  const handleAddDish = (e) => {
+  const generateSlug = (text) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  };
+
+  const resetForm = () => {
+    setName('');
+    setPrice('');
+    setCategory('Ethiopian');
+    setImage('');
+    setEditingId(null);
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!name || !price) return;
 
-    const newDish = {
-      id: `dish-${Date.now()}`,
-      name,
-      price: parseFloat(price),
-      category,
-      image: image || 'https://via.placeholder.com/150'
-    };
+    if (editingId) {
+      const updatedDishes = dishes.map((dish) => {
+        if (dish.id === editingId) {
+          return {
+            ...dish,
+            name,
+            price: parseFloat(price),
+            category,
+            image: image || dish.image || 'https://via.placeholder.com/150',
+            slug: generateSlug(name)
+          };
+        }
+        return dish;
+      });
 
-    const updatedDishes = [newDish, ...dishes];
-    setDishes(updatedDishes);
-    localStorage.setItem('addis_eats_custom_dishes', JSON.stringify(updatedDishes));
+      setDishes(updatedDishes);
+      localStorage.setItem('addis_eats_custom_dishes', JSON.stringify(updatedDishes));
+    } else {
+      const newDish = {
+        id: `dish-${Date.now()}`,
+        slug: generateSlug(name),
+        name,
+        price: parseFloat(price),
+        category,
+        image: image || 'https://via.placeholder.com/150'
+      };
 
-    setName('');
-    setPrice('');
-    setImage('');
+      const updatedDishes = [newDish, ...dishes];
+      setDishes(updatedDishes);
+      localStorage.setItem('addis_eats_custom_dishes', JSON.stringify(updatedDishes));
+    }
+
+    resetForm();
+  };
+
+  const handleEditClick = (dish) => {
+    setEditingId(dish.id);
+    setName(dish.name);
+    setPrice(dish.price);
+    setCategory(dish.category || 'Ethiopian');
+    setImage(dish.image || '');
   };
 
   const handleDeleteDish = (id) => {
@@ -53,6 +98,10 @@ export default function DishManager() {
       const updated = dishes.filter((dish) => dish.id !== id);
       setDishes(updated);
       localStorage.setItem('addis_eats_custom_dishes', JSON.stringify(updated));
+      
+      if (editingId === id) {
+        resetForm();
+      }
     }
   };
 
@@ -63,17 +112,18 @@ export default function DishManager() {
       <h2 style={{ marginBottom: '1.5rem' }}>Dish Manager</h2>
 
       <form
-        onSubmit={handleAddDish}
+        onSubmit={handleSubmit}
         style={{
           display: 'flex',
           gap: '0.75rem',
           marginBottom: '2rem',
           flexWrap: 'wrap',
           alignItems: 'center',
-          backgroundColor: '#f9fafb',
+          backgroundColor: editingId ? '#fffbebfb' : '#f9fafb',
           padding: '1rem',
           borderRadius: '8px',
-          border: '1px solid #e5e7eb'
+          border: editingId ? '1px solid #f59e0b' : '1px solid #e5e7eb',
+          transition: 'all 0.2s ease'
         }}
       >
         <input
@@ -113,7 +163,7 @@ export default function DishManager() {
           type="submit"
           style={{
             padding: '0.5rem 1rem',
-            backgroundColor: '#d97706',
+            backgroundColor: editingId ? '#2563eb' : '#d97706',
             color: '#fff',
             border: 'none',
             borderRadius: '4px',
@@ -121,8 +171,25 @@ export default function DishManager() {
             fontWeight: 'bold'
           }}
         >
-          Add Dish
+          {editingId ? 'Update Dish' : 'Add Dish'}
         </button>
+
+        {editingId && (
+          <button
+            type="button"
+            onClick={resetForm}
+            style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: '#6b7280',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Cancel
+          </button>
+        )}
       </form>
 
       {dishes.length === 0 ? (
@@ -151,7 +218,20 @@ export default function DishManager() {
                 <td style={{ padding: '0.75rem', fontWeight: 'bold' }}>{dish.name}</td>
                 <td style={{ padding: '0.75rem' }}>{dish.category}</td>
                 <td style={{ padding: '0.75rem' }}>{formatCurrency(dish.price)}</td>
-                <td style={{ padding: '0.75rem' }}>
+                <td style={{ padding: '0.75rem', display: 'flex', gap: '0.5rem' }}>
+                  <button
+                    onClick={() => handleEditClick(dish)}
+                    style={{
+                      padding: '0.25rem 0.5rem',
+                      color: '#2563eb',
+                      border: '1px solid #2563eb',
+                      backgroundColor: 'transparent',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Edit
+                  </button>
                   <button
                     onClick={() => handleDeleteDish(dish.id)}
                     style={{

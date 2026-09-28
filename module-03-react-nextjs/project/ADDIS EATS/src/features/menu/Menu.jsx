@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useFetch } from '../../hooks/useFetch';
 import { useCart } from '../../context/CartContext';
 import { useFavorites } from '../../context/FavoritesContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Menu() {
   const { data: dishes, loading, error } = useFetch('/menu-data.json');
@@ -10,6 +10,7 @@ export default function Menu() {
   const { toggleFavorite, isFavorite } = useFavorites();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   if (loading) return <div className="loading-state">Loading menu...</div>;
   if (error) return <div className="error-state">Error loading menu: {error}</div>;
@@ -75,12 +76,28 @@ export default function Menu() {
             const fav = isFavorite(dish.id);
 
             return (
-              <div key={dish.id} className="dish-card" style={{ border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden', position: 'relative', background: '#fff' }}>
+              <div
+                key={dish.id}
+                className="dish-card"
+                onClick={() => navigate(`/menu/${dish.slug || dish.id}`)}
+                style={{
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  background: '#fff',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                }}
+              >
                 <div style={{ position: 'relative', height: '180px' }}>
                   <img src={dish.image} alt={dish.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   
                   <button
-                    onClick={() => toggleFavorite(dish.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(dish.id);
+                    }}
                     style={{
                       position: 'absolute',
                       top: '10px',
@@ -117,11 +134,14 @@ export default function Menu() {
                   <p style={{ fontWeight: 'bold', color: '#d97706', margin: '0 0 1rem 0' }}>{dish.price} ETB</p>
                   
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Link to={`/menu/${dish.id}`} style={{ color: '#d97706', fontSize: '0.875rem', textDecoration: 'none' }}>
-                      Details
-                    </Link>
+                    <span style={{ color: '#d97706', fontSize: '0.875rem', textDecoration: 'none' }}>
+                      Details →
+                    </span>
                     <button
-                      onClick={() => addToCart(dish)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(dish);
+                      }}
                       style={{
                         background: '#d97706',
                         color: '#fff',

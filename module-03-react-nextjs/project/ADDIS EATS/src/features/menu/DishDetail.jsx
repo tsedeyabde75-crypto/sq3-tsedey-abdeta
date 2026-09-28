@@ -6,7 +6,7 @@ import { useFavorites } from '../../context/FavoritesContext';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 export default function DishDetail() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const { data: dishes, loading, error } = useFetch('/menu-data.json');
   const { addToCart } = useCart();
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -14,7 +14,9 @@ export default function DishDetail() {
   if (loading) return <div className="loading-state">Loading dish details...</div>;
   if (error) return <div className="error-state">Error loading dish: {error}</div>;
 
-  const dish = dishes?.find((d) => String(d.id) === String(id));
+  const dish = dishes?.find(
+    (d) => d.slug === slug || String(d.id) === String(slug)
+  );
 
   if (!dish) {
     return (
