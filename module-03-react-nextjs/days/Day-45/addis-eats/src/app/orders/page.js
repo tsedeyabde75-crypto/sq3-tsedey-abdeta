@@ -1,30 +1,21 @@
-import Link from "next/link";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function OrdersPage() {
-  const orders = [
-    { id: "ord_12345", status: "Preparing", total: 730, date: "2026-10-10" }
-  ];
+export default async function OrdersPage() {
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get("session");
+
+  if (!sessionCookie) {
+    redirect("/signin");
+  }
+
+  const sessionData = JSON.parse(sessionCookie.value);
+  const userEmail = sessionData.email;
 
   return (
-    <main className="container mx-auto px-4 py-8 max-w-2xl">
-      <h1 className="text-3xl font-bold mb-6">Your Orders</h1>
-      <div className="space-y-4">
-        {orders.map((order) => (
-          <div key={order.id} className="bg-white p-6 rounded-xl shadow-sm border flex justify-between items-center">
-            <div>
-              <p className="font-bold">Order #{order.id}</p>
-              <p className="text-sm text-gray-500">Date: {order.date}</p>
-              <p className="text-sm font-medium text-blue-600 mt-1">Status: {order.status}</p>
-            </div>
-            <div className="text-right">
-              <p className="font-bold mb-2">{order.total} ETB</p>
-              <Link href={`/orders/${order.id}`} className="px-4 py-2 bg-gray-100 text-sm rounded-lg hover:bg-gray-200">
-                Track Status
-              </Link>
-            </div>
-          </div>
-        ))}
-      </div>
-    </main>
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">Your Orders</h1>
+      <p className="text-green-600 font-medium mb-4">Scoped securely for: {userEmail}</p>
+    </div>
   );
 }
