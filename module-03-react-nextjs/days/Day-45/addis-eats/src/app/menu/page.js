@@ -1,65 +1,94 @@
-import Link from "next/link";
-import Image from "next/image";
+'use client';
 
-const dishes = [
-  { 
-    id: "d1", 
-    name: "Doro Wat", 
-    price: 350, 
-    image: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=400&q=80", 
-    description: "Traditional spicy chicken stew with hard-boiled eggs." 
-  },
-  { 
-    id: "d2", 
-    name: "Kitfo", 
-    price: 380, 
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80", 
-    description: "Minced lean beef warmed in spiced clarified butter and mitmita." 
-  },
-  { 
-    id: "d3", 
-    name: "Tibs", 
-    price: 320, 
-    image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=400&q=80", 
-    description: "Sauteed chunks of beef with onions, garlic, and rosemary." 
-  },
-  { 
-    id: "d4", 
-    name: "Shiro", 
-    price: 220, 
-    image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80", 
-    description: "Smooth, spiced chickpea flour puree simmered in clay pots." 
-  }
-];
+import { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import useSWR from 'swr';
+import { useCart } from '@/context/CartContext';
+import MenuSearch from '@/components/MenuSearch';
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function MenuPage() {
+  const { addToCart } = useCart();
+  const { data: menuItems, error, isLoading } = useSWR('/api/menu', fetcher);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <p className="text-lg font-medium text-gray-600 animate-pulse">Loading authentic dishes...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <p className="text-lg font-medium text-red-600">Failed to load menu. Please try again later.</p>
+      </div>
+    );
+  }
+
+  const filteredItems = menuItems?.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Our Menu</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {dishes.map((dish) => (
-          <div key={dish.id} className="bg-white rounded-xl shadow-sm border overflow-hidden flex flex-col">
-            <div className="relative h-48 w-full">
-              <Image 
-                src={dish.image} 
-                alt={dish.name} 
-                fill 
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                className="object-cover" 
-              />
-            </div>
-            <div className="p-4 flex flex-col flex-grow">
-              <h2 className="text-xl font-semibold mb-1">{dish.name}</h2>
-              <p className="text-gray-600 text-sm mb-4 flex-grow">{dish.description}</p>
-              <div className="flex justify-between items-center mt-auto">
-                <span className="text-lg font-bold text-blue-600">{dish.price} ETB</span>
-                <Link 
-                  href={`/menu/${dish.id}`} 
-                  className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  View
-                </Link>
+    <main className="max-w-6xl mx-auto px-4 py-8">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
+          Our Menu
+        </h1>
+        <p className="text-base text-gray-600 mb-6">
+          Explore authentic Ethiopian dishes crafted by top Addis kitchens.
+        </p>
+        
+        <MenuSearch onSearch={setSearchTerm} />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {filteredItems?.map((item, index) => (
+          <div
+            key={item.id}
+            className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow"
+          >
+            {/* Clickable Card Link for Details */}
+            <Link href={`/menu/${item.id}`} className="flex flex-col flex-grow group">
+              <div className="relative w-full h-40 overflow-hidden">
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  fill
+                  priority={index < 3}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               </div>
+              <div className="p-4 flex flex-col flex-grow justify-between">
+                <div>
+                  <div className="flex justify-between items-center mb-1.5">
+                    <h2 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                      {item.name}
+                    </h2>
+                    <span className="text-sm font-semibold text-blue-600">{item.price} ETB</span>
+                  </div>
+                  <p className="text-xs text-gray-600 mb-4">{item.description}</p>
+                </div>
+              </div>
+            </Link>
+
+            {/* Add to Cart Button (Isolated from Link navigation) */}
+            <div className="p-4 pt-0">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToCart(item);
+                }}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 text-sm rounded-lg transition-colors active:scale-95"
+              >
+                Add to Cart
+              </button>
             </div>
           </div>
         ))}

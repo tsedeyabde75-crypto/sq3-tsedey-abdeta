@@ -1,20 +1,34 @@
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="container mx-auto px-4 py-16 flex flex-col items-center text-center">
-      <h1 className="text-5xl font-extrabold tracking-tight mb-6">
-        Authentic Ethiopian Food, Delivered Fast
+    <main className="flex flex-col items-center justify-center px-4 py-8 text-center max-w-5xl mx-auto">
+      <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">
+        Fresh Ethiopian Meals Delivered Straight to You
       </h1>
-      <p className="text-xl text-gray-600 max-w-2xl mb-10">
-        Order Doro Wat, Tibs, Kitfo, and Shiro from top kitchens in Bole, Kazanchis, and across Addis Ababa.
+      
+      <p className="text-lg font-semibold text-gray-800 max-w-xl mb-6">
+        Order your favorite local dishes from top Addis kitchens.
       </p>
-      <div className="flex gap-4">
-        <Link href="/menu" className="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
+
+      <div className="relative w-full max-w-2xl h-64 rounded-2xl overflow-hidden shadow-md border border-gray-200 mb-6 bg-white">
+        <Image
+          src="/images/hero-food.jpg"
+          alt="Ethiopian Food Feast"
+          fill
+          priority
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+          className="object-cover"
+        />
+      </div>
+
+      <div>
+        <Link
+          href="/menu"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow transition-colors inline-block text-sm"
+        >
           Explore Menu
-        </Link>
-        <Link href="/cart" className="px-8 py-3 border border-gray-300 rounded-lg font-semibold hover:bg-gray-100 transition">
-          View Cart
         </Link>
       </div>
     </main>
