@@ -1,17 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
 export function middleware(request) {
-  const session = request.cookies.get("session");
+  const token = request.cookies.get('session_token')?.value;
   const { pathname } = request.nextUrl;
 
-  if (
-    !session &&
-    (pathname.startsWith("/orders") ||
-      pathname.startsWith("/checkout") ||
-      pathname.startsWith("/kitchen"))
-  ) {
-    const signinUrl = new URL("/signin", request.url);
-    signinUrl.searchParams.set("next", pathname);
+  const protectedRoutes = ['/checkout', '/orders', '/kitchen'];
+
+  if (protectedRoutes.some((route) => pathname.startsWith(route)) && !token) {
+    const signinUrl = new URL('/signin', request.url);
+    signinUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(signinUrl);
   }
 
@@ -19,5 +16,5 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/orders/:path*", "/checkout/:path*", "/kitchen/:path*"],
+  matcher: ['/checkout/:path*', '/orders/:path*', '/kitchen/:path*'],
 };

@@ -17,18 +17,25 @@ export function FavoritesProvider({ children }) {
     }
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("addis_eats_favorites", JSON.stringify(favorites));
-  }, [favorites]);
-
   const toggleFavorite = (item) => {
     setFavorites((prev) => {
       const exists = prev.some((fav) => fav.id === item.id);
-      if (exists) {
-        return prev.filter((fav) => fav.id !== item.id);
-      } else {
-        return [...prev, item];
-      }
+      const updated = exists
+        ? prev.filter((fav) => fav.id !== item.id)
+        : [...prev, item];
+
+      localStorage.setItem("addis_eats_favorites", JSON.stringify(updated));
+      window.dispatchEvent(new Event("favoritesUpdated"));
+      return updated;
+    });
+  };
+
+  const removeFavorite = (id) => {
+    setFavorites((prev) => {
+      const updated = prev.filter((fav) => fav.id !== id);
+      localStorage.setItem("addis_eats_favorites", JSON.stringify(updated));
+      window.dispatchEvent(new Event("favoritesUpdated"));
+      return updated;
     });
   };
 
@@ -37,7 +44,9 @@ export function FavoritesProvider({ children }) {
   };
 
   return (
-    <FavoritesContext.Provider value={{ favorites, toggleFavorite, isFavorite }}>
+    <FavoritesContext.Provider
+      value={{ favorites, toggleFavorite, removeFavorite, isFavorite }}
+    >
       {children}
     </FavoritesContext.Provider>
   );
