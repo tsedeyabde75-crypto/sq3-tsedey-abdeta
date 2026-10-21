@@ -38,7 +38,7 @@ const dishesData = {
 
 export default function DishDetailPage() {
   const params = useParams();
-  const id = params?.id;
+  const id = params?.id ? (Array.isArray(params.id) ? params.id[0] : params.id) : "d1";
   const dish = dishesData[id] || dishesData["d1"];
   const { addToCart } = useCart();
   const [added, setAdded] = useState(false);
@@ -60,6 +60,7 @@ export default function DishDetailPage() {
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover" 
             priority
+            unoptimized
           />
         </div>
         <div className="flex flex-col justify-between">
